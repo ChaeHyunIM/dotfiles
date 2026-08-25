@@ -31,7 +31,7 @@ claude/
 codex/                config.toml, AGENTS.md
 shell/                zshrc, zprofile, gitconfig
 config/
-  ghostty/            터미널 설정
+  ghostty/config      터미널 설정 — macOS 는 ~/Library/Application Support/ 아래를 읽는다
   nvim/               init.lua, colors/mac_classic.lua
 ```
 

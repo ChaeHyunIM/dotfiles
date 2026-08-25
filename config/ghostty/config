@@ -1,0 +1,31 @@
+# Ghostty. 옵션 목록은 `ghostty +show-config --default --docs`.
+# macOS 는 ~/Library/Application Support/com.mitchellh.ghostty/config 를 읽는다.
+
+font-family = "Lilex"
+font-family = "Monoplex KR"
+font-size = 18
+
+theme = Apple System Colors Light
+window-decoration = true
+mouse-hide-while-typing = true
+macos-option-as-alt = true
+
+keybind = shift+enter=text:\x1b\r
+keybind = global:cmd+shift+space=toggle_quick_terminal
+
+# 분할 이동 — tmux 대신 쓴다
+keybind = cmd+h=goto_split:left
+keybind = cmd+j=goto_split:bottom
+keybind = cmd+k=goto_split:top
+keybind = cmd+l=goto_split:right
+
+# cmd+a 를 prefix 로 둔다
+keybind = cmd+a>h=new_split:left
+keybind = cmd+a>j=new_split:down
+keybind = cmd+a>k=new_split:up
+keybind = cmd+a>l=new_split:right
+keybind = cmd+a>z=toggle_split_zoom
+keybind = cmd+a>r=prompt_surface_title
+
+keybind = cmd+r=prompt_tab_title
+keybind = cmd+shift+a=select_all
