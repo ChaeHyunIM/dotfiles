@@ -22,10 +22,6 @@ global = "zed"
 
 # --- MCP servers (직접 추가한 것만) ---
 
-[mcp_servers.context7]
-command = "npx"
-args = ["-y", "@upstash/context7-mcp"]
-
 [mcp_servers.agent-device]
 command = "agent-device"
 args = ["mcp"]
