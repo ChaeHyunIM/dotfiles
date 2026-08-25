@@ -77,6 +77,14 @@ done
 
 chmod +x "$DOTFILES/claude/hooks"/*.sh 2>/dev/null || true
 chmod +x "$DOTFILES/claude/scripts"/*.sh 2>/dev/null || true
+chmod +x "$DOTFILES/tools"/*.sh 2>/dev/null || true
+
+# .gitattributes 가 가리키는 clean 필터. .git/config 는 추적되지 않으므로
+# 클론할 때마다 다시 등록해야 한다.
+if git -C "$DOTFILES" rev-parse --git-dir >/dev/null 2>&1; then
+  git -C "$DOTFILES" config filter.codex-state.clean "$DOTFILES/tools/codex-clean.sh"
+  echo "  codex-state clean 필터 등록"
+fi
 
 echo
 echo "링크 $linked 개 생성"
