@@ -1,0 +1,20 @@
+# 인증 정보 — 절대 커밋 금지
+.credentials.json
+**/auth.json
+**/*credentials*
+.env
+.env.*
+
+# 머신별 상태
+**/settings.local.json
+gitconfig.local
+*.log
+.DS_Store
+
+# Claude Code 런타임 (혹시라도 딸려온 경우 방어)
+**/history.jsonl
+**/sessions/
+**/projects/
+**/file-history/
+**/shell-snapshots/
+**/session-env/

@@ -1,0 +1,103 @@
+{
+  "permissions": {
+    "allow": [],
+    "defaultMode": "auto"
+  },
+  "model": "opus[1m]",
+  "skillOverrides": {
+    "find-skills": "off",
+    "supabase-postgres-best-practices": "off"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "EnterWorktree",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/link-env-after-worktree.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "worktree": {
+    "baseRef": "head"
+  },
+  "enabledPlugins": {
+    "bigquery-data-analytics@claude-plugins-official": false,
+    "cloudflare@claude-plugins-official": true,
+    "expo@claude-plugins-official": true,
+    "notion@claude-plugins-official": true,
+    "planetscale@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "slack@claude-plugins-official": true,
+    "sentry@sentry-plugin-marketplace": true,
+    "eli5@claude-community": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-code-warp": {
+      "source": {
+        "source": "github",
+        "repo": "warpdotdev/claude-code-warp"
+      }
+    },
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    },
+    "svelte": {
+      "source": {
+        "source": "github",
+        "repo": "sveltejs/ai-tools"
+      }
+    },
+    "sentry-plugin-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "getsentry/plugin-claude"
+      }
+    },
+    "claude-community": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-community"
+      }
+    }
+  },
+  "language": "Korean",
+  "effortLevel": "medium",
+  "tui": "fullscreen",
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "skipWorkflowUsageWarning": true,
+  "theme": "light",
+  "editorMode": "normal",
+  "autoCompactEnabled": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "autoMode": {
+    "soft_deny": [
+      "$defaults"
+    ],
+    "environment": [
+      "### Org-wide",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Default / protected branches**: main (default)",
+      "**Network posture**: None configured",
+      "**Trusted cloud buckets**: None configured",
+      "**Internal package registry**: None configured",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace/host/container with `prod` or `production` as a whole word/segment",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development (TypeScript monorepos — pnpm, Turborepo, Next.js/Expo/Hono)",
+      "**Org-specific CLIs**: None configured"
+    ]
+  },
+  "voiceEnabled": true
+}

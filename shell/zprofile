@@ -1,0 +1,5 @@
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Added by swiftly
+. "/Users/imchaehyun/.swiftly/env.sh"

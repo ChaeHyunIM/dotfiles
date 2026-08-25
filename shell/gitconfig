@@ -1,0 +1,14 @@
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[credential]
+	helper = osxkeychain
+[pull]
+	rebase = true
+
+# 이름과 이메일은 머신·소속마다 다르고 공개 저장소에 남길 값도 아니므로
+# 추적하지 않는 ~/.gitconfig.local 에 둔다. install.sh 가 없으면 만들어 준다.
+[include]
+	path = ~/.gitconfig.local

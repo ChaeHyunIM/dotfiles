@@ -1,0 +1,70 @@
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
+personality = "pragmatic"
+service_tier = "priority"
+
+[features]
+hooks = true
+js_repl = false
+
+[notice]
+hide_gpt5_1_migration_prompt = true
+"hide_gpt-5.1-codex-max_migration_prompt" = true
+
+[desktop]
+conversationDetailMode = "STEPS_COMMANDS"
+ambient-suggestions-enabled = true
+followUpQueueMode = "queue"
+realtimeVoiceScreenContextEnabled = true
+
+[desktop.open-in-target-preferences]
+global = "zed"
+
+# --- MCP servers (직접 추가한 것만) ---
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+
+[mcp_servers.agent-device]
+command = "agent-device"
+args = ["mcp"]
+
+[mcp_servers.chrome-devtools]
+command = "npx"
+args = ["-y", "chrome-devtools-mcp@latest"]
+
+[mcp_servers.mobbin]
+url = "https://api.mobbin.com/mcp"
+
+[mcp_servers.google_cloud_big_query_mcp]
+enabled = true
+url = "https://bigquery.googleapis.com/mcp"
+
+[mcp_servers.safari-mcp-stp]
+command = "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver"
+args = ["--mcp"]
+
+# --- 마켓플레이스 (직접 추가한 git 소스만) ---
+
+[marketplaces.planetscale]
+source_type = "git"
+source = "https://github.com/planetscale/codex-plugin.git"
+
+[marketplaces.expo-plugins]
+source_type = "git"
+source = "https://github.com/expo/skills.git"
+ref = "main"
+
+[marketplaces.sentry-plugin-marketplace]
+source_type = "git"
+source = "https://github.com/getsentry/plugin-codex.git"
+
+[plugins."planetscale@planetscale"]
+enabled = true
+
+[plugins."expo@expo-plugins"]
+enabled = true
+
+[plugins."sentry@sentry-plugin-marketplace"]
+enabled = true
