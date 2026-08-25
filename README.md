@@ -75,26 +75,3 @@ Codex `[projects.*]` 와 `openai-bundled`(앱이 자동 생성).
 | git 신원 | `~/.gitconfig.local` 의 `name` · `email` |
 
 Homebrew 패키지는 관리하지 않는다. 필요한 걸 그때그때 깐다.
-
-## 걸렸던 것
-
-**앱이 설정을 되쓴다.** `settings.json` 과 `codex/config.toml` 은 각 앱이 직접 쓰기도 한다.
-머신 상태를 도로 채워 넣으니 커밋 전에 diff 를 훑을 것.
-
-**`autoMode` 는 프로젝트 스코프에서 안 먹는다.** user·managed 전용이다. 프로젝트 전용 규칙은
-그 저장소의 `.claude/settings.json` 에 `permissions.ask` 로 쓴다.
-
-**Bash 규칙의 `:*` 는 패턴 끝에서만 후행 와일드카드다.** 중간에 오면 콜론이 리터럴이 되어
-아무것도 안 걸린다.
-
-```
-Bash(psql:*prod*)   ✗  psql: 라는 문자열을 요구함
-Bash(psql*prod*)    ✓
-```
-
-**푸시하려면 gh 활성 계정이 개인 계정이어야 한다.** remote URL 에 계정을 박아도 자격증명
-헬퍼가 못 잡는다.
-
-```bash
-gh auth switch -u ChaeHyunIM && git push && gh auth switch -u yourkase-chaehyun
-```
