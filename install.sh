@@ -32,6 +32,7 @@ link shell/zshrc          .zshrc
 link shell/zprofile       .zprofile
 link shell/gitconfig      .gitconfig
 link config/ghostty       .config/ghostty
+link config/nvim          .config/nvim
 
 # git 신원은 저장소에 담지 않는다. 없으면 자리만 만들어 두고 값은 사람이 채운다.
 if [[ ! -f "$HOME/.gitconfig.local" ]]; then

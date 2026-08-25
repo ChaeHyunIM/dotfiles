@@ -68,3 +68,4 @@ enabled = true
 
 [plugins."sentry@sentry-plugin-marketplace"]
 enabled = true
+
