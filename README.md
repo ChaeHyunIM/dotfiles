@@ -1,42 +1,19 @@
 # dotfiles
 
-Claude Code · Codex · zsh 설정을 한곳에 모은 저장소입니다. 여러 머신에서 같은 환경을 쓰려고
-만들었습니다.
+Claude Code · Codex · zsh 설정을 한곳에 모은 저장소. 파일은 여기 살고, `install.sh` 가 홈의
+원래 자리로 심링크를 건다. 설정을 고치면 `git status` 에 잡히고, `git pull` 로 다른 머신에
+간다.
 
-파일은 이 저장소에 두고, `install.sh` 가 홈 디렉터리의 원래 자리로 심링크를 겁니다. 설정을
-고치면 곧바로 `git status` 에 잡힙니다. 다른 머신에는 `git pull` 한 번으로 반영됩니다.
+- 에이전트 설정 — Claude Code(지침·모델·플러그인·hook·스킬), Codex(모델·MCP·플러그인)
+- 스킬 25개 — 정본 18개는 런타임 중립, Claude 전용 7개는 별도
+- 셸 — zsh(zinit · p10k · nvm · fzf · zoxide), git, ghostty
 
-## 새 머신 설치
+## 빠른 시작
 
 ```bash
-xcode-select --install
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
 git clone https://github.com/ChaeHyunIM/dotfiles.git ~/dotfiles
 ~/dotfiles/install.sh
 ```
-
-공개 저장소라 클론에 인증이 필요하지 않습니다.
-
-`install.sh` 는 몇 번을 실행해도 안전합니다. 목적지에 실제 파일이 있으면 지우지 않습니다.
-`~/.dotfiles-backup/<타임스탬프>/` 로 옮긴 뒤에 링크를 겁니다.
-
-설치 후 수동으로 해야 하는 것:
-
-| 항목 | 명령 |
-|---|---|
-| nvm | `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh \| bash` |
-| Node | `nvm install 26` |
-| pnpm | `curl -fsSL https://get.pnpm.io/install.sh \| sh -` |
-| Claude Code 로그인 | `claude` 실행 후 인증 |
-| Codex 로그인 | `codex` 실행 후 인증 |
-| git 신원 | `~/.gitconfig.local` 의 `name` · `email` 채우기 |
-
-git 의 이름과 이메일은 추적하지 않는 `~/.gitconfig.local` 에 둡니다. `shell/gitconfig` 가
-`[include]` 로 불러옵니다. 머신·소속마다 값이 다르고, 공개 저장소에 남길 값도 아니기
-때문입니다. `install.sh` 는 파일이 없을 때만 자리를 만들어 둡니다.
-
-Homebrew 패키지는 관리하지 않습니다. 필요한 것을 그때그때 설치하세요.
 
 ## 구조
 
@@ -55,38 +32,69 @@ shell/                zshrc, zprofile, gitconfig
 config/ghostty/       터미널 설정
 ```
 
-### 스킬이 두 군데로 나뉘는 이유
+## install.sh
 
-스킬 정본은 런타임 중립인 `~/.agents/skills/` 에 둡니다. Claude Code 외의 에이전트(Codex 등)와
-함께 쓰기 때문입니다. `~/.claude/skills/<name>` 은 거기를 가리키는 **상대경로 심링크**입니다.
+심링크를 거는 게 전부다. 의존성이 없어서 새 맥에서 바로 돈다.
 
-Workflow · Agent · Artifact 처럼 Claude Code 에만 있는 기능에 기대는 스킬은 `claude/skills/` 에
-실제 디렉터리로 둡니다. 옮겨봐야 다른 런타임에서 돌지 않기 때문입니다.
+몇 번을 돌려도 결과가 같다. 목적지에 심링크가 아닌 실파일이 있으면 지우지 않고
+`~/.dotfiles-backup/<타임스탬프>/` 로 옮긴 뒤 링크한다.
 
-심링크 자체는 저장소에 담지 않습니다. `install.sh` 가 매번 규약대로 다시 만듭니다. 경로가
-어긋난 링크가 있어도 실행하는 김에 교정됩니다.
+스킬 심링크 25개는 저장소에 담지 않고 실행할 때마다 다시 만든다. 그래서 경로가 어긋난
+링크가 있어도 돌리면 고쳐진다.
 
-## 넣지 않는 것
+`~/.gitconfig.local` 이 없으면 자리만 만들어 둔다. 값은 직접 채운다.
 
-| 대상 | 이유 |
+## 아키텍처
+
+**스킬이 두 군데로 나뉜다.** 정본은 런타임 중립인 `~/.agents/skills/` 에 두고,
+`~/.claude/skills/<name>` 은 거기를 가리키는 상대경로 심링크다. Codex 와 같이 쓰기 때문이다.
+Workflow · Agent · Artifact 처럼 Claude Code 에만 있는 기능에 기대는 스킬만
+`claude/skills/` 에 실디렉터리로 둔다 — 옮겨봐야 다른 런타임에서 안 돈다.
+
+**`~/.claude` 는 통째로 링크하지 않는다.** 세션 기록·로그·크리덴셜이 설정과 같은 디렉터리에
+산다. 관리 대상만 파일 단위로 건다.
+
+**git 신원은 저장소 밖에 둔다.** `shell/gitconfig` 가 `[include]` 로 `~/.gitconfig.local` 을
+부른다. 기본값은 개인 계정, 회사 저장소는 저장소별로 덮어쓴다.
+
+**안 넣는 것** — `history.jsonl` · `sessions/` · `projects/` · `daemon.log`(런타임 기록),
+`.credentials.json` · `auth.json`(인증), `settings.local.json`(머신별),
+`keybindings.json`(기본값 덤프 — 두면 이후 기본값 변경이 안 따라온다),
+Codex `[projects.*]` 와 `openai-bundled`(앱이 자동 생성).
+
+## 환경 설정
+
+`install.sh` 가 못 하는 것들.
+
+| 항목 | 명령 |
 |---|---|
-| `~/.claude/history.jsonl`, `sessions/`, `projects/`, `daemon.log` | 런타임 기록 |
-| `~/.claude/.credentials.json`, `~/.codex/auth.json` | 인증 정보 |
-| `settings.local.json` | 머신별 권한 캐시 |
-| `~/.claude/keybindings.json` | 기본값 덤프 — 이후 기본값 변경이 안 따라옴 |
-| Codex `[projects.*]`, `openai-bundled` 마켓플레이스 | 앱이 자동 생성하는 머신 상태 |
+| nvm | `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh \| bash` |
+| Node | `nvm install 26` |
+| pnpm | `curl -fsSL https://get.pnpm.io/install.sh \| sh -` |
+| 로그인 | `claude`, `codex` 각각 실행 후 인증 |
+| git 신원 | `~/.gitconfig.local` 의 `name` · `email` |
 
-`settings.json` 과 `codex/config.toml` 은 각 앱이 직접 쓰기도 합니다. 앱이 머신 상태를 도로
-채워 넣으면 diff 에 잡힙니다. 커밋 전에 한 번 훑고 필요 없는 줄은 지우세요.
+Homebrew 패키지는 관리하지 않는다. 필요한 걸 그때그때 깐다.
 
-## 프로젝트별 설정은 여기 두지 않습니다
+## 걸렸던 것
 
-특정 저장소에서만 쓰는 규칙은 그 저장소의 `.claude/settings.json` 에 커밋합니다. 클론하는
-팀원 모두에게 적용됩니다. 그 프로젝트를 열지 않았을 때는 존재하지 않습니다.
+**앱이 설정을 되쓴다.** `settings.json` 과 `codex/config.toml` 은 각 앱이 직접 쓰기도 한다.
+머신 상태를 도로 채워 넣으니 커밋 전에 diff 를 훑을 것.
 
-단 `autoMode` 는 user 또는 managed 스코프에서만 동작합니다. 프로젝트 파일에 넣으면
-무시됩니다. 자동 승인을 막고 확인을 받으려면 프로젝트의 `permissions.ask` 로 표현하세요.
+**`autoMode` 는 프로젝트 스코프에서 안 먹는다.** user·managed 전용이다. 프로젝트 전용 규칙은
+그 저장소의 `.claude/settings.json` 에 `permissions.ask` 로 쓴다.
 
-`permissions.ask` 규칙에는 문법 제약이 하나 있습니다. Bash 규칙의 `:*` 는 패턴 끝에서만 후행
-와일드카드로 해석됩니다. 중간에 오면 콜론이 리터럴이 되어 아무것도 매칭하지 않습니다.
-`Bash(psql:*prod*)` 가 아니라 `Bash(psql*prod*)` 로 써야 합니다.
+**Bash 규칙의 `:*` 는 패턴 끝에서만 후행 와일드카드다.** 중간에 오면 콜론이 리터럴이 되어
+아무것도 안 걸린다.
+
+```
+Bash(psql:*prod*)   ✗  psql: 라는 문자열을 요구함
+Bash(psql*prod*)    ✓
+```
+
+**푸시하려면 gh 활성 계정이 개인 계정이어야 한다.** remote URL 에 계정을 박아도 자격증명
+헬퍼가 못 잡는다.
+
+```bash
+gh auth switch -u ChaeHyunIM && git push && gh auth switch -u yourkase-chaehyun
+```
