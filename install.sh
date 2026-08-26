@@ -67,20 +67,35 @@ link claude/output-styles .claude/output-styles
 # 정본은 ~/.agents 를 상대경로로 가리켜야 다른 런타임과 공유된다.
 # ~/.codex/skills 에는 Codex 가 제공하는 .system 이 함께 살기 때문에
 # ~/.claude/skills 와 마찬가지로 디렉터리째 링크하지 않고 하나씩 건다.
+#
+# 목적지가 심링크가 아닌 실제 디렉터리면 macOS 의 ln -sfn 은 교체하지 않고
+# 그 안에 링크를 만들어 버린다. link() 와 같은 방식으로 백업으로 치운 뒤 건다.
+link_skill() {
+  local src="$1" dst="$2"
+  if [[ -e "$dst" && ! -L "$dst" ]]; then
+    local rel="${dst#"$HOME"/}"
+    mkdir -p "$(dirname "$BACKUP/$rel")"
+    mv "$dst" "$BACKUP/$rel"
+    backed_up=$((backed_up + 1))
+  fi
+  ln -sfn "$src" "$dst"
+  linked=$((linked + 1))
+}
+
 echo "==> 스킬 링크 재생성"
 mkdir -p "$HOME/.claude/skills" "$HOME/.codex/skills"
 for s in "$DOTFILES/agents/skills"/*/; do
   name="$(basename "$s")"
-  ln -sfn "../../.agents/skills/$name" "$HOME/.claude/skills/$name"
-  ln -sfn "../../.agents/skills/$name" "$HOME/.codex/skills/$name"
+  link_skill "../../.agents/skills/$name" "$HOME/.claude/skills/$name"
+  link_skill "../../.agents/skills/$name" "$HOME/.codex/skills/$name"
 done
 for s in "$DOTFILES/claude/skills"/*/; do
   name="$(basename "$s")"
-  ln -sfn "${s%/}" "$HOME/.claude/skills/$name"
+  link_skill "${s%/}" "$HOME/.claude/skills/$name"
 done
 for s in "$DOTFILES/codex/skills"/*/; do
   name="$(basename "$s")"
-  ln -sfn "${s%/}" "$HOME/.codex/skills/$name"
+  link_skill "${s%/}" "$HOME/.codex/skills/$name"
 done
 
 chmod +x "$DOTFILES/claude/hooks"/*.sh 2>/dev/null || true
