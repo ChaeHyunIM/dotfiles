@@ -4,6 +4,10 @@ Before writing or editing a Workflow script, and before spawning multiple subage
 
 `/code-review` is no exception when it generates a local workflow. Invoke `workflow-tiering` before creating the script and apply the five-stage assignment (Scope · Find · Verify · Sweep · Synthesize) from that skill's `/code-review` section. A level passed by the user (high · xhigh · max) is a **ceiling**, not a flat value for every stage.
 
+## Visual style for published pages
+
+Before writing or editing an Artifact — or any standalone HTML page meant to be looked at — invoke the `brand-style` skill first. It holds the typography and icon rules, shared with Codex (where the same feature is called a site), so neither runtime carries its own copy.
+
 ## Creating a new skill — home is `~/.agents/skills/`
 
 Claude Code runs **alongside other coding agents** (Codex and others). So a skill's canonical copy lives in the runtime-neutral home `~/.agents/skills/<name>/`, and `~/.claude/skills/<name>` is a **symlink** pointing there. This holds even when `/skill-creator` is invoked — if the skill-creator skill says to write directly into `~/.claude/skills/`, this rule wins. Most existing skills already follow this layout.
@@ -33,4 +37,30 @@ This skill lives in `~/.claude/skills/` because it depends on <specific Claude-o
 How to substitute it in Codex or elsewhere is undecided.
 ```
 
-`~/.agents/.skill-lock.json` holds the install records. For the detailed pitfalls (distinct skills that merely share a name, misreading `agents/openai.yaml`), see the memory `reference_skill_homes_agents_vs_claude`.
+`~/.agents/.skill-lock.json` holds the install records. Two pitfalls when reading this layout:
+
+- **`agents/openai.yaml` says nothing about Claude.** It is the portable-skill manifest other runtimes read (`interface`, `policy.allow_implicit_invocation`). Claude Code reads only `disable-model-invocation` in the SKILL.md frontmatter, so one folder can carry different policies per runtime. Never conclude "this is blocked in Claude" from that file.
+- **Same name ≠ same skill.** `~/.agents/skills/implement` was once an unrelated 15-line general skill while the loop's `implement` lived elsewhere. Open both before calling one an outdated copy.
+
+Also note `find ~/.claude/skills -maxdepth 2` does not follow symlinks — use `-L` or `readlink -f` first.
+
+## Never print secrets
+
+Never `cat` / `Read` a secret file — `.env`, `.env.local`, `.dev.vars`, `.dev.vars.local`. **A masking `sed` is not an exception**: an incomplete pattern leaks the real value into the transcript, and once it is in the log, rotation is the only remedy. This happened on 2026-07-11 (`DATABASE_URL` for prod, AWS/R2 keys, `BETTER_AUTH_SECRET`, `APPLE_CLIENT_SECRET`, `GA4_SA_PRIVATE_KEY`).
+
+Work without reading the values instead:
+- Counting or listing keys: `grep -c`, `grep -oE '^[A-Z_]+='`.
+- Editing or renaming: `sed -i ''` in place — no output.
+- If a value genuinely must be known, ask the user for it. Do not print it.
+
+## Billable work stays inside the approved scope
+
+For anything that costs money (Cloudflare Images transformations, paid API calls, bulk storage), the approved scope is **the exact target the user named**. "Just run it all at once" approves the axis under discussion, not an adjacent one (another format, table, or surface). Finding a gap mid-task is not authorization to widen.
+
+When an extra target appears, keep the order: (1) confirm from the code that a real consumer exists, (2) compute the cost, (3) report and get approval — then bake. "Completeness" and "while we're at it" are not reasons. Report the remainder as a list instead.
+
+Why this is a hard rule: on 2026-08-04 an approved avif backfill (13,401 transforms) silently grew by 9,649 webp/video-thumbnail transforms ($4.8). Most of it was dead spend — the web `<picture>` serves `<source type="image/avif">` with a webp `<img>` fallback, so avif-capable browsers never request webp at all. Images bills per unique transformation at request time and deleting the output refunds nothing.
+
+## Do not touch the git remote
+
+Never rewrite a git remote URL, in particular not HTTPS → SSH. The user drives push/pull with lazygit but also opens GitHub Desktop, which breaks on an SSH remote. If a push fails, leave the remote alone and ask the user to push.
