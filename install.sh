@@ -49,6 +49,9 @@ echo "==> Codex"
 link codex/config.toml    .codex/config.toml
 link codex/AGENTS.md      .codex/AGENTS.md
 
+# 스킬은 링크하지 않는다. 저장소에는 원문과 디렉터리 구조만 두고, 각 런타임에
+# 어떻게 얹을지는 그 런타임의 에이전트에게 맡긴다 — 런타임마다 스킬을 찾는
+# 경로와 규칙이 다르고 계속 바뀌기 때문이다. 자세한 건 README 의 「스킬」 절.
 echo "==> 스킬 정본 (런타임 중립)"
 link agents/skills            .agents/skills
 link agents/.skill-lock.json  .agents/.skill-lock.json
@@ -60,46 +63,9 @@ link claude/CLAUDE.md     .claude/CLAUDE.md
 link claude/settings.json .claude/settings.json
 link claude/commands      .claude/commands
 link claude/hooks         .claude/hooks
-link claude/scripts       .claude/scripts
 link claude/output-styles .claude/output-styles
 
-# 스킬 심링크는 저장소에 담지 않고 여기서 만든다.
-# 정본은 ~/.agents 를 상대경로로 가리켜야 다른 런타임과 공유된다.
-# ~/.codex/skills 에는 Codex 가 제공하는 .system 이 함께 살기 때문에
-# ~/.claude/skills 와 마찬가지로 디렉터리째 링크하지 않고 하나씩 건다.
-#
-# 목적지가 심링크가 아닌 실제 디렉터리면 macOS 의 ln -sfn 은 교체하지 않고
-# 그 안에 링크를 만들어 버린다. link() 와 같은 방식으로 백업으로 치운 뒤 건다.
-link_skill() {
-  local src="$1" dst="$2"
-  if [[ -e "$dst" && ! -L "$dst" ]]; then
-    local rel="${dst#"$HOME"/}"
-    mkdir -p "$(dirname "$BACKUP/$rel")"
-    mv "$dst" "$BACKUP/$rel"
-    backed_up=$((backed_up + 1))
-  fi
-  ln -sfn "$src" "$dst"
-  linked=$((linked + 1))
-}
-
-echo "==> 스킬 링크 재생성"
-mkdir -p "$HOME/.claude/skills" "$HOME/.codex/skills"
-for s in "$DOTFILES/agents/skills"/*/; do
-  name="$(basename "$s")"
-  link_skill "../../.agents/skills/$name" "$HOME/.claude/skills/$name"
-  link_skill "../../.agents/skills/$name" "$HOME/.codex/skills/$name"
-done
-for s in "$DOTFILES/claude/skills"/*/; do
-  name="$(basename "$s")"
-  link_skill "${s%/}" "$HOME/.claude/skills/$name"
-done
-for s in "$DOTFILES/codex/skills"/*/; do
-  name="$(basename "$s")"
-  link_skill "${s%/}" "$HOME/.codex/skills/$name"
-done
-
 chmod +x "$DOTFILES/claude/hooks"/*.sh 2>/dev/null || true
-chmod +x "$DOTFILES/claude/scripts"/*.sh 2>/dev/null || true
 chmod +x "$DOTFILES/tools"/*.sh 2>/dev/null || true
 
 # .gitattributes 가 가리키는 clean 필터. .git/config 는 추적되지 않으므로
@@ -119,3 +85,5 @@ echo "남은 수동 작업:"
 echo "  - nvm 설치 후  nvm install 26"
 echo "  - pnpm 설치    curl -fsSL https://get.pnpm.io/install.sh | sh -"
 echo "  - claude / codex 로그인"
+echo "  - 스킬 얹기   각 런타임에서 에이전트에게 ~/dotfiles/{agents,claude,codex}/skills 를"
+echo "                이 런타임 규칙대로 설치해 달라고 시킬 것 (README 「스킬」 절)"
