@@ -16,3 +16,7 @@
 
 - 브랜치명은 ASCII 영문 소문자, 숫자, 하이픈, 슬래시만 사용한다.
 - 이슈나 작업 제목이 한국어여도 브랜치명은 의미가 드러나는 영문 slug로 만든다.
+
+## Git 커밋
+
+- Codex가 커밋을 만들 때 커밋 메시지 끝에 `Co-Authored-By: Codex <codex@openai.com>` trailer를 추가한다.
