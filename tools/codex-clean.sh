@@ -2,8 +2,9 @@
 #
 # git clean 필터 — stdin 으로 받은 codex/config.toml 에서 Codex 앱이 자동으로
 # 채워 넣는 머신 상태를 걷어내고 stdout 으로 넘긴다. 대상은 [projects.*] 신뢰
-# 기록, 앱이 번들로 심는 node_repl·computer-use MCP 서버, openai-bundled
-# 마켓플레이스와 그 플러그인 활성 기록, computer-use notify 훅이다. 전부 앱이
+# 기록, 앱이 번들로 심는 node_repl·computer-use MCP 서버, 앱이 심는
+# 마켓플레이스(openai-bundled·openai-primary-runtime — 후자는 머신별 캐시
+# 절대경로를 가리킨다)와 그 플러그인 활성 기록, computer-use notify 훅이다. 전부 앱이
 # 다시 만들어 주는 값이고 앱 버전이 올라갈 때마다 바뀌므로 추적할 이유가 없다.
 #
 # 등록은 install.sh 가 한다. 필터가 없는 클론에서는 git 이 내용을 그대로
@@ -21,8 +22,8 @@ awk '
     skip = ($0 ~ /^\[projects\./ \
          || $0 ~ /^\[mcp_servers\.node_repl[].]/ \
          || $0 ~ /^\[mcp_servers\.computer-use\]/ \
-         || $0 ~ /^\[marketplaces\.openai-bundled\]/ \
-         || $0 ~ /^\[plugins\."[^"]*@openai-bundled"\]/)
+         || $0 ~ /^\[marketplaces\.openai-(bundled|primary-runtime)\]/ \
+         || $0 ~ /^\[plugins\."[^"]*@openai-(bundled|primary-runtime)"\]/)
     if (skip) { blanks = 0; next }
   }
   /^[[:space:]]*$/           { blanks++; next }
