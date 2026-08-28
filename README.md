@@ -8,7 +8,7 @@ Claude Code · Codex · zsh 설정을 한곳에 모은 저장소. 파일은 여�
 설치는 그 런타임의 에이전트에게 시킨다. 「스킬」 절을 볼 것.
 
 - 에이전트 설정 — Claude Code(지침·모델·플러그인·hook), Codex(모델·MCP·플러그인)
-- 스킬 26개 — 정본 24개는 런타임 중립, 런타임 전용이 따로
+- 스킬 — 정본 24개는 런타임 중립, Claude 전용 3개와 Codex 전용 2개가 따로
 - 셸 — zsh(zinit · p10k · nvm · fzf · zoxide), git, ghostty
 - 에디터 — Neovim 단일파일 설정(init.lua) + mac_classic 테마
 
@@ -31,7 +31,7 @@ claude/
   output-styles/      korean-output
   skills/             Claude 전용 3개 (Workflow · Agent · Artifact 의존)
 codex/                config.toml, AGENTS.md
-  skills/             Codex 전용 1개
+  skills/             Codex 전용 2개
 shell/                zshrc, zprofile, gitconfig
 config/
   ghostty/config      터미널 설정 — macOS 는 ~/Library/Application Support/ 아래를 읽는다
