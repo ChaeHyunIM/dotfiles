@@ -1,11 +1,26 @@
 model = "gpt-5.6-sol"
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 personality = "pragmatic"
 service_tier = "priority"
 
 [features]
 hooks = true
 js_repl = false
+
+[auto_review]
+policy = """
+The user explicitly authorizes routine GitHub delivery for Codex-owned work branches in every local session.
+
+Approve an ordinary `git push -u origin <branch>` when all of these conditions hold:
+- `<branch>` starts with `agent/issue-` or `codex/`.
+- The destination is the repository's configured `origin`.
+- The command does not use force, force-with-lease, delete, mirror, all, tags, or a refspec that targets another branch.
+- The destination branch is not `main`, `master`, `dev`, or the pull request's base branch.
+
+Approve `gh pr create` when its head branch starts with `agent/issue-` or `codex/` and its base is a different branch.
+Treat source-code transmission to the configured Git remote as explicitly authorized only in those cases.
+Continue to reject or require the user for direct pushes to base/protected branches, force pushes, branch deletion, merges, releases, deployments, and unrelated external data transmission.
+"""
 
 [notice]
 hide_gpt5_1_migration_prompt = true
