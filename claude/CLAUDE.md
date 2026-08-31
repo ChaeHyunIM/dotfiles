@@ -44,6 +44,14 @@ How to substitute it in Codex or elsewhere is undecided.
 
 Also note `find ~/.claude/skills -maxdepth 2` does not follow symlinks — use `-L` or `readlink -f` first.
 
+## 사람이 읽는 코멘트는 승인받고 올린다
+
+**팀원이 최소 1명 태그되어 읽어야 하는 글이면** — Linear 이슈 코멘트, PR 코멘트, Slack 메시지 무엇이든 — 에이전트가 직접 게시하지 않는다. 초안만 내놓고 사람의 승인을 받은 뒤에 올린다.
+
+초안은 짧고 압축적으로, 사람이 말하듯 쓴다. 사용자가 그 문장을 그대로 복사해 쓸 수 없으면 실패한 초안이다. AI 가 쓴 티가 나는 긴 설명·라벨 나열·과잉 친절은 읽는 사람에게 해독 비용만 남긴다.
+
+사람 태그 없이 순수 기록용으로 남기는 개발 이슈 로그는 예외 — 에이전트가 그냥 작성해도 된다. `/review-round` 가 PR 에 올리는 라운드 코멘트도 개발자끼리 보는 글이라 예외다.
+
 ## Never print secrets
 
 Never `cat` / `Read` a secret file — `.env`, `.env.local`, `.dev.vars`, `.dev.vars.local`. **A masking `sed` is not an exception**: an incomplete pattern leaks the real value into the transcript, and once it is in the log, rotation is the only remedy. This happened on 2026-07-11 (`DATABASE_URL` for prod, AWS/R2 keys, `BETTER_AUTH_SECRET`, `APPLE_CLIENT_SECRET`, `GA4_SA_PRIVATE_KEY`).
