@@ -31,6 +31,7 @@ conversationDetailMode = "STEPS_COMMANDS"
 ambient-suggestions-enabled = true
 followUpQueueMode = "queue"
 realtimeVoiceScreenContextEnabled = true
+appearanceTheme = "system"
 
 [desktop.open-in-target-preferences]
 global = "zed"
